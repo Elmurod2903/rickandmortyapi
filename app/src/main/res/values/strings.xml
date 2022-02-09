@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">RickAndMortyApi</string>
+    <string name="retry">retry</string>
+    <string name="error_message">error message</string>
+    <string name="data_not_found">Data not found</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="no_internet_txt">Your internet connection is currently not available please check</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+</resources>
