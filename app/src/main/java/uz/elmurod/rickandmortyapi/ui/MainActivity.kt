@@ -27,6 +27,7 @@ import uz.elmurod.rickandmortyapi.databinding.ActivityMainBinding
 import uz.elmurod.rickandmortyapi.util.Constants
 import uz.elmurod.rickandmortyapi.viewmodel.AppViewModel
 
+@ExperimentalPagingApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -35,40 +36,37 @@ class MainActivity : AppCompatActivity() {
     private var broadcastReceiver: BroadcastReceiver? = null
 
 
-    @ExperimentalPagingApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this)[AppViewModel::class.java]
         broadcastReceiver = NetworkChangeListener(this, this)
+        viewModel = ViewModelProvider(this)[AppViewModel::class.java]
+
         initRv()
-
-        adapter.onOrderClickListener = OnActionListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.url)))
-        }
-        binding.btnTry.setOnClickListener {
-            adapter.retry()
-        }
-        adapter.addLoadStateListener { loadState ->
-            binding.apply {
-                loadStateProgress.isVisible = loadState.source.refresh is LoadState.Loading
-                rvRam.isVisible = loadState.source.refresh is LoadState.Loading
-                btnTry.isVisible = loadState.source.refresh is LoadState.Error
-                errorMassage.isVisible = loadState.source.refresh is LoadState.Error
-                // not found
-                rvRam.isVisible = !(loadState.source.refresh is LoadState.NotLoading &&
-                        loadState.append.endOfPaginationReached &&
-                        adapter.itemCount < 1)
+            binding.btnTry.setOnClickListener {
+                adapter.retry()
             }
+            adapter.addLoadStateListener { loadState ->
+                binding.apply {
+                    loadStateProgress.isVisible = loadState.source.refresh is LoadState.Loading
+                    rvRam.isVisible = loadState.source.refresh is LoadState.Loading
+                    btnTry.isVisible = loadState.source.refresh is LoadState.Error
+                    errorMassage.isVisible = loadState.source.refresh is LoadState.Error
 
-        }
-        lifecycleScope.launchWhenStarted {
+                    rvRam.isVisible = !(loadState.source.refresh is LoadState.NotLoading &&
+                            loadState.append.endOfPaginationReached &&
+                            adapter.itemCount < 1)
+                }
+
+            }
             viewModel.getRickAndMorty()
             viewModel.getNetworkStatus()
 
+            adapter.onOrderClickListener = OnActionListener {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Constants.url)))
+            }
         }
-    }
 
     private fun initRv() {
         adapter = RAMAdapter()
@@ -79,8 +77,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-
-    @ExperimentalPagingApi
     override fun onResume() {
         super.onResume()
         lifecycleScope.launch {
@@ -92,7 +88,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalPagingApi
     private val networkStateObserver = Observer<Boolean> { isClicked ->
         if (isClicked) {
             viewModel.getRickAndMorty()
