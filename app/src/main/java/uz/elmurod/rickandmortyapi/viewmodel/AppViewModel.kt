@@ -10,6 +10,8 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import uz.elmurod.rickandmortyapi.data.RAM
 import uz.elmurod.rickandmortyapi.repository.RickAndMortyRepository
@@ -23,6 +25,9 @@ class AppViewModel @Inject constructor(private val repository: RickAndMortyRepos
     private val _getRickAndMorty = MutableLiveData<PagingData<RAM>>()
     val getRickAndMorty: LiveData<PagingData<RAM>> = _getRickAndMorty
 
+    private val _networkState = MutableLiveData<Boolean>()
+    val networkState: LiveData<Boolean> = _networkState
+
     @ExperimentalPagingApi
     fun getRickAndMorty() {
         job?.cancel()
@@ -31,5 +36,10 @@ class AppViewModel @Inject constructor(private val repository: RickAndMortyRepos
                 _getRickAndMorty.postValue(it)
             }
         }
+    }
+    fun getNetworkStatus() {
+        repository.getNetworkStatus().onEach {
+            _networkState.postValue(it)
+        }.launchIn(viewModelScope)
     }
 }

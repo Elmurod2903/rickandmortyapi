@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
         }
         lifecycleScope.launchWhenStarted {
             viewModel.getRickAndMorty()
+            viewModel.getNetworkStatus()
+
         }
     }
 
@@ -78,12 +80,22 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @ExperimentalPagingApi
     override fun onResume() {
         super.onResume()
         lifecycleScope.launch {
             viewModel.getRickAndMorty.observe(this@MainActivity, Observer {
                 adapter.submitData(lifecycle, it)
             })
+            viewModel.networkState.observe(this@MainActivity, networkStateObserver)
+
+        }
+    }
+
+    @ExperimentalPagingApi
+    private val networkStateObserver = Observer<Boolean> { isClicked ->
+        if (isClicked) {
+            viewModel.getRickAndMorty()
         }
     }
 

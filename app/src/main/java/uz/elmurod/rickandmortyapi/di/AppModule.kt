@@ -16,7 +16,9 @@ import uz.elmurod.rickandmortyapi.database.RAMDatabase
 import uz.elmurod.rickandmortyapi.database.dao.RAMDao
 import uz.elmurod.rickandmortyapi.database.dao.RemoteKeysDao
 import uz.elmurod.rickandmortyapi.network.api.RickAndMortyApi
+import uz.elmurod.rickandmortyapi.network.plugs.PreferencePlug
 import uz.elmurod.rickandmortyapi.network.plugs.RickAndMortyPlugs
+import uz.elmurod.rickandmortyapi.network.port.PreferencePort
 import uz.elmurod.rickandmortyapi.network.port.RickAndMortyPort
 import uz.elmurod.rickandmortyapi.util.Constants
 import javax.inject.Singleton
@@ -72,4 +74,7 @@ class AppModule {
     fun remoteKeyDao(database: RAMDatabase): RemoteKeysDao {
         return database.remoteKeyDao()
     }
+
+    @Provides
+    fun preferencePlug(preferencePlug: PreferencePlug): PreferencePort = preferencePlug
 }

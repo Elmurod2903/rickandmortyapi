@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import uz.elmurod.rickandmortyapi.data.RAM
 import uz.elmurod.rickandmortyapi.database.RAMDatabase
 import uz.elmurod.rickandmortyapi.mapper.RAMRMMapper
+import uz.elmurod.rickandmortyapi.network.port.PreferencePort
 import uz.elmurod.rickandmortyapi.network.port.RickAndMortyPort
 import uz.elmurod.rickandmortyapi.paging.RAMPagingDataSource
 import uz.elmurod.rickandmortyapi.paging.RAMRemoteMediator
@@ -14,8 +15,10 @@ import javax.inject.Inject
 class RickAndMortyRepository @Inject constructor(
     private val ramPort: RickAndMortyPort,
     private val db: RAMDatabase,
-    private val rmMapper: RAMRMMapper
-) {
+    private val rmMapper: RAMRMMapper,
+    private val preferencePort: PreferencePort,
+
+    ) {
     @ExperimentalPagingApi
     fun getRickAndMorty(): Flow<PagingData<RAM>>? {
         return try {
@@ -34,4 +37,6 @@ class RickAndMortyRepository @Inject constructor(
             null
         }
     }
+    fun getNetworkStatus(): Flow<Boolean> = preferencePort.networkStatus()
+
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RickAndMortyApi</string>
+    <string name="app_name">Rick and Morty</string>
     <string name="retry">retry</string>
     <string name="error_message">error message</string>
     <string name="data_not_found">Data not found</string>

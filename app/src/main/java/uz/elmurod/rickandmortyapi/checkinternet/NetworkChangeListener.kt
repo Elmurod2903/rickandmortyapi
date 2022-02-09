@@ -9,17 +9,28 @@ import android.provider.Settings
 
 import androidx.core.app.ActivityCompat.startActivityForResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import uz.elmurod.rickandmortyapi.R
 import uz.elmurod.rickandmortyapi.checkinternet.Connect.Companion.isConnectToInternet
+import uz.elmurod.rickandmortyapi.network.port.PreferencePort
 
 import java.lang.NullPointerException
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class NetworkChangeListener(private val activity: Activity, context: Context) :
     BroadcastReceiver() {
 
+    @Inject
+    lateinit var preferencePort: PreferencePort
+
     override fun onReceive(context: Context, intent: Intent) {
         try {
+            CoroutineScope(Dispatchers.Default).launch {
+                preferencePort.setNetworkStatus(!isConnectToInternet(context))
+            }
             if (!isConnectToInternet(context)) {
                 // true
                 alertDialog?.dismiss()

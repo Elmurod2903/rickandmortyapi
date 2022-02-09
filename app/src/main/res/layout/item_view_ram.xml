@@ -10,6 +10,7 @@
     android:background="?selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
+
     android:outlineAmbientShadowColor="@color/ultramarine_blue"
     android:outlineSpotShadowColor="@color/ultramarine_blue"
     app:cardCornerRadius="16dp"
